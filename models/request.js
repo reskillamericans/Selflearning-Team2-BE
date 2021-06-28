@@ -20,6 +20,6 @@ const requestSchema = new Schema(
       ref: 'User',
     },
   },
-  { timestampe: true }
+  { timestamps: true }
 )
 module.export = mongoose.model('Request', requestSchema)
