@@ -122,3 +122,4 @@ dist
 
 tmp/
 config.env
+.DS_Store
