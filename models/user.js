@@ -39,9 +39,5 @@ const userSchema = new Schema({
       },
     },
   ],
-  // collaborators for a student user would be mentors assisting (High-Def Student Login Frame 33)
-  // for mentors it would be students helped (High-Def Mentor Sign-in Flow Frame 32)
-  collaborators: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 })
-
 module.exports = mongoose.model('User', userSchema)
