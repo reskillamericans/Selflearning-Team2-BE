@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
 exports.destroy = async (req, res) => {
   try {
     const id = req.params.id
-    courseCleanUp(id)
+    await Step.updateMany({associatedCourse: id, }, {associatedCourse: null})
     const data = await Course.findByIdAndDelete(id)
     if (!data) {
       return res.status(404).json({ status: 'fail', errorMessage: 'course not found' })
@@ -61,19 +61,5 @@ exports.destroy = async (req, res) => {
     res.status(200).json({ status: 'success', message: 'course deleted', data })
   } catch (err) {
     if (err) res.status(500).json({ status: 'fail', errorMessage: err.message })
-  }
-}
-
-// Function to remove deleted course from the associatedCourse key
-// of its referenced steps
-
-async function courseCleanUp(id) {
-  const course = await Course.findById(id)
-  if (course?.steps.length > 0) {
-    course.steps.forEach(async stepId => {
-      const step = await Step.findById(stepId)
-      step.associatedCourse = undefined
-      await step.save()
-    })
   }
 }

@@ -49,7 +49,7 @@ exports.show = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const id = req.params.id
-    const data = await Step.findByIdAndUpdate(id, req.body, { new: true })
+    const data = await Step.findByIdAndUpdate(id, {...req.body}, { new: true })
     if (!data) {
       return res.status(404).json({ status: 'fail', errorMessage: 'step not found' })
     }
