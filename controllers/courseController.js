@@ -1,4 +1,3 @@
-const { SchemaType } = require('mongoose')
 const Course = require('../models/course')
 const Step = require('../models/step')
 
@@ -40,7 +39,7 @@ exports.show = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const id = req.params.id
-    const data = await Course.findByIdAndUpdate(id, req.body, { new: true })
+    const data = await Course.findByIdAndUpdate(id, {...req.body}, { new: true })
     if (!data) {
       return res.status(404).json({ status: 'fail', errorMessage: 'course not found' })
     }
