@@ -49,6 +49,9 @@ app.get('/', (req, res) => {
 // Authentication Route
 app.use('/api/v1/auth', require('./routes/authRoute'));
 
+// Profile Management Route
+app.use('/api/v1/users', require('./routes/userRoute'));
+
 
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
