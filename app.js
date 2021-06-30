@@ -53,7 +53,7 @@ app.use('/api/v1/auth', require('./routes/authRoute'));
 app.use('/api/v1/courses', require('./routes/courseRoute'));
 
 // Step Route
-app.use('/api/v1//steps', require('./routes/stepRoute'))
+app.use('/api/v1/steps', require('./routes/stepRoute'))
 
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
