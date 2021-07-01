@@ -76,16 +76,10 @@ const deleteUser = async (req, res) => {
 // @route       PATCH /api/v1/users/:userID
 // @access      Private
 const updateUser = async (req, res) => {
+  console.log({...req.body});
+  // possible field to expect
+  // 1. name 2. courses 3. channels 4. phone
   try {
-    // Check if user is trying to change his/her role to admin
-    if (req.body.role === 'admin') {
-      return sendErrorResponse(
-        res,
-        'You have no access to change your role to admin',
-        400
-      );
-    }
-
     const user = await User.findById(req.params.userID);
 
     if (!user) {
@@ -94,28 +88,25 @@ const updateUser = async (req, res) => {
 
     // Check if req.body contains courses and the user is a mentor
     if (req.body.courses && user.role === 'mentor') {
-      const courses = [];
-      [...req.body.courses, ...user.courses].forEach(el => {
-        courses.push(el.toString());
-      });
-
-      // To remove duplicate course
-      user.courses = [...new Set(courses)];
+      const courses = [...req.body.courses, ...user.courses];
+      // Remove duplicate course if any
+      user.courses.addToSet(...courses);
     }
 
     if (req.body.channels) {
       const channels = [...req.body.channels, ...user.channels];
-      channels.forEach(el => {
-        user.channels.push(el)
-      });
+      
+      // To remove duplicate object if any
+      user.channels = [
+        ...new Map(channels.map(el => [el['platform'], el])).values()
+      ];
     }
+
 
     user.name = req.body.name ? req.body.name : user.name;
     user.phone = req.body.phone ? req.body.phone : user.phone;
 
-    await user.save({
-      validateBeforeSave: false
-    });
+    await user.save();
 
     sendSuccessResponse(user, res, 'User profile updated successfully', 200);
   } catch (error) {
