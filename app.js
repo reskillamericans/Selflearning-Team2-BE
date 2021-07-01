@@ -49,6 +49,11 @@ app.get('/', (req, res) => {
 // Authentication Route
 app.use('/api/v1/auth', require('./routes/authRoute'));
 
+// Course Route
+app.use('/api/v1/courses', require('./routes/courseRoute'));
+
+// Step Route
+app.use('/api/v1/steps', require('./routes/stepRoute'))
 
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
