@@ -8,7 +8,6 @@ const xss = require('xss-clean');
 const helmet = require('helmet');
 const hpp = require('hpp');
 
-
 const app = express();
 
 //middleware
@@ -49,11 +48,14 @@ app.get('/', (req, res) => {
 // Authentication Route
 app.use('/api/v1/auth', require('./routes/authRoute'));
 
+// Users Route
+app.use('/api/v1/users', require('./routes/userRoute'));
+
 // Course Route
 app.use('/api/v1/courses', require('./routes/courseRoute'));
 
 // Step Route
-app.use('/api/v1/steps', require('./routes/stepRoute'))
+app.use('/api/v1/steps', require('./routes/stepRoute'));
 
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
@@ -62,6 +64,5 @@ app.all('*', (req, res, next) => {
     errorMessage: `Can't find ${req.originalUrl} on this server`
   });
 });
-
 
 module.exports = app;
