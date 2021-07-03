@@ -9,6 +9,7 @@ const sendSuccessResponse = (user, res, message, statusCode) => {
 };
 
 const sendErrorResponse = (res, errorMessage, statusCode, error = '') => {
+  console.log(error);
   if (error.kind === 'ObjectId') {
     return res.status(statusCode).json({
       status: 'success',
@@ -76,11 +77,21 @@ const deleteUser = async (req, res) => {
 // @route       PATCH /api/v1/users/:userID
 // @access      Private
 const updateUser = async (req, res) => {
-  console.log({...req.body});
-  // possible field to expect
-  // 1. name 2. courses 3. channels 4. phone
+  const userObj = { ...req.body };
+
   try {
-    const user = await User.findById(req.params.userID);
+    if (userObj.role || userObj.email || userObj.courses || userObj.steps) {
+      delete userObj.role;
+      delete userObj.email;
+      delete userObj.courses;
+      delete userObj.steps;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.userID,
+      { ...userObj },
+      { new: true }
+    );
 
     if (!user) {
       return sendErrorResponse(res, 'User not found', 404);
@@ -89,22 +100,24 @@ const updateUser = async (req, res) => {
     // Check if req.body contains courses and the user is a mentor
     if (req.body.courses && user.role === 'mentor') {
       const courses = [...req.body.courses, ...user.courses];
-      // Remove duplicate course if any
+      // Remove duplicate course if any 
       user.courses.addToSet(...courses);
+    }
+
+    
+    if (req.body.steps) {
+      const steps = [...req.body.steps, ...user.steps];
+      // Remove duplicate steps ID
+      user.steps.addToSet(...steps);
     }
 
     if (req.body.channels) {
       const channels = [...req.body.channels, ...user.channels];
-      
       // To remove duplicate object if any
       user.channels = [
         ...new Map(channels.map(el => [el['platform'], el])).values()
       ];
     }
-
-
-    user.name = req.body.name ? req.body.name : user.name;
-    user.phone = req.body.phone ? req.body.phone : user.phone;
 
     await user.save();
 
