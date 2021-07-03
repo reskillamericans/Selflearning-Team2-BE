@@ -6,16 +6,8 @@ exports.createToken = (user) => {
     try {
         let token = jwt.sign({
             name: user.name,
-            email: user.email,
-            phone: user.phone,
-            password: user.password,
+            email: user.email,            
             role: user.role,
-            courses: user.courses,
-            steps: user.steps,
-            availability: user.availability,
-            channels: user.channels,
-            platform: user.platform,
-            address: user.address
         }, secret, {expiresIn: expiry});
         return token
     } catch (err) {
