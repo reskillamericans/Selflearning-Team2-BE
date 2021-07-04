@@ -64,9 +64,3 @@ exports.loginUser = (req, res) => {
         return res.status(200).json({message: "Successfully logged in", token})
   })
 }
-
-
-
-module.exports = {
-  testing
-};

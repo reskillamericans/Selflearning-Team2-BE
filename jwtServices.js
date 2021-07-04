@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET;
-const expiry = 5;
+const expiry =Number(process.env.JWT_EXPIRES_IN);
 
 exports.createToken = (user) => {
     try {

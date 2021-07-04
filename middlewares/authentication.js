@@ -1,5 +1,3 @@
-const {decodedToken, decodeToken} = require('jwtServices.js')
-
 exports.authenticateUser = (req,res,next) => {
     if(!req.headers.authorization) {                                   
         return res.status(401).json({err})
