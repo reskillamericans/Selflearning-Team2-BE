@@ -1,26 +1,5 @@
 const User = require('../models/user');
-
-const sendSuccessResponse = (user, res, message, statusCode) => {
-  res.status(statusCode).json({
-    status: 'success',
-    message: message,
-    data: user
-  });
-};
-
-const sendErrorResponse = (res, errorMessage, statusCode, error = '') => {
-  console.log(error);
-  if (error.kind === 'ObjectId') {
-    return res.status(statusCode).json({
-      status: 'success',
-      errorMessage: 'Invalid user Id'
-    });
-  }
-  res.status(statusCode).json({
-    status: 'success',
-    errorMessage
-  });
-};
+const {sendSuccessResponse, sendErrorResponse} = require('../middlewares/response')
 
 // @desc        Get all users.
 // @route       GET /api/v1/users
