@@ -1,11 +1,19 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
-const stepController = require('../controllers/stepController')
+const stepController = require('../controllers/stepController');
+const {authenticateUser, checkIfAdmin} = require ('../middlewares/authentication');
 
-router.get('/', stepController.index)
-router.post('/', stepController.create)
-router.get('/:id', stepController.show)
-router.put('/:id', stepController.update)
-router.delete('/:id', stepController.destroy)
+//fetch step
+router.get('/steps', authenticateUser, stepController.index);
+//add step to course
+router.post('/steps', authenticateUser, checkIfAdmin, stepController.create);
+//fetch single step
+router.get('/steps/:id', authenticateUser, stepController.show);
+//update single step
+router.put('/steps/:id', authenticateUser, checkIfAdmin, stepController.update);
+//delete single step
+router.delete('/steps/:id', authenticateUser, checkIfAdmin, stepController.destroy);
 
-module.exports = router
+module.exports = router;
+
+
