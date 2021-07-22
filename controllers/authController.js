@@ -7,7 +7,7 @@ const testing = (req, res, next) => {
 
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-const {createToken} = require('jwtServices.js');
+const {createToken} = require('../jwtServices.js');
 
 exports.registerNewUser = (req, res) => {
   //create new user account 
