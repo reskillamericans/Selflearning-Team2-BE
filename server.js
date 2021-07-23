@@ -6,7 +6,7 @@ dotenv.config({
 const app = require('./app');
 const port = process.env.PORT || 4000;
 
-const connectDB = require('./db/connectDb');
+const connectDB = require('./db/connectDB');
 
 const startServer = async () => {
   // Local DB, comment out when you want to push to github
