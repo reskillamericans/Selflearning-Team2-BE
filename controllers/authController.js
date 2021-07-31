@@ -17,30 +17,36 @@ exports.registerNewUser = (req, res) => {
     phone: req.body.phone,
     password: req.body.password,
     role: req.body.role,
-  }, (err, newUer) => {
+  }, (err, newUser) => {
     if (err) {
       return res.status(500).json({err})
     }
   //Hashing user password. This is to validate the integrity of stored data
-    bycrypt.genSalt(10, (err,salt) => {
+    bcrypt.genSalt(10, (err,salt) => {
       if (err) {
         return res.status(500).json({err})
       }
-      bycrypt.hash(req.body.password, salt, (err, hashedPassword) => {
+      bcrypt.hash(req.body.password, salt, (err, hashedPassword) => {
         if (err) {
-          return res.status(500).json({err})
-
-  //creating jwt for new user so as to ensure trust and security in the application
-         let token = createToken(newUser);
-         if (!token) {
-           return res.status(500).json({err})
-         }
-  //sending registration successful response to user
-         return res.status(200).json({message: "Registration Successful", token})
+          return res.status(500).json({err})  
         }
+        //Save password to database 
+        newUser.password = hashedPassword;           
+        newUser.save((err, savedUser) => {
+            if (err) {
+                return res.status(500).json({err})                  
+            }
+       //creating jwt for new user so as to ensure trust and security in the application
+            let token = createToken(newUser);
+            if (!token) {
+               return res.status(500).json({err})
+            }
+//sending registration successful response to user
+            return res.status(200).json({message: "Registration Successful", token})  
       })
     })
   })
+})
 }
 
 
@@ -64,3 +70,7 @@ exports.loginUser = (req, res) => {
         return res.status(200).json({message: "Successfully logged in", token})
   })
 }
+
+
+
+

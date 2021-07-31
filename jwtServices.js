@@ -8,7 +8,7 @@ exports.createToken = (user) => {
             name: user.name,
             email: user.email,            
             role: user.role,
-        }, secret, {expiresIn: expiry});
+        }, secret, {expiresIn: 7200});
         return token
     } catch (err) {
         console.log(err)

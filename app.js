@@ -57,6 +57,11 @@ app.use('/api/v1/courses', require('./routes/courseRoute'));
 // Step Route
 app.use('/api/v1/steps', require('./routes/stepRoute'));
 
+
+//Password Reset
+//app.use('/api/v1/auth/password-reset', require('./routes/resetPwd'));
+
+
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
   res.status(404).json({
@@ -64,5 +69,6 @@ app.all('*', (req, res, next) => {
     errorMessage: `Can't find ${req.originalUrl} on this server`
   });
 });
+
 
 module.exports = app;
