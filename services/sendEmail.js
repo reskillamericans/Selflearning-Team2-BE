@@ -1,5 +1,4 @@
 //Configures the Email transporter.
-
 const nodemailer = require("nodemailer");
 const port = process.env.PORT || 4000;
 const dotenv = require('dotenv');

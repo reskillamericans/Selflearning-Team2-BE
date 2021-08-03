@@ -4,11 +4,11 @@ const router = express.Router();
 
 const authController = require('./../controllers/authController');
 
-const passwordReset = require('./../passwordReset/resetPwd');
 
 router.post('/signup', authController.registerNewUser);
 router.post('/login', authController.loginUser);
-
+router.post('/forgot', authController.forgotPassword);
+router.post('/reset', authController.resetPassword);
 
 
 module.exports = router;
