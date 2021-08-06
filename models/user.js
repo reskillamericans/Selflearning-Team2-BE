@@ -15,8 +15,7 @@ const userSchema = new Schema({
   steps: [{ type: Schema.Types.ObjectId, ref: 'Step' }],
   availability: [Date],
   channels: [{platform: String, address: String}],
-  
-  resetLink: {data: String, default: ''}
+  link: { type: String, required: false }   
 })
 
 module.exports = mongoose.model('User', userSchema)

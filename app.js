@@ -1,4 +1,6 @@
 const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
