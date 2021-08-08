@@ -26,27 +26,3 @@ exports.decodeToken =(token) => {
     }
 }
 
-//This is used to create token model used for password reset
-exports.createPwdToken = (token) => {
-    try {
-        let pwdToken = jwt.sign({
-            userId: token.userId,
-            token: token.token,            
-            createdAt: token.createdAt,
-        }, process.env.RESET_PASSWORD_KEY, {expiresIn: 600});
-        return pwdToken
-    } catch (err) {
-        console.log(err)
-        return null        
-    }
-}
-
-exports.decodePwdToken =(token) => {
-    try {
-        let decodedPwdToken = jwt.verify(token, process.env.RESET_PASSWORD_KEY);
-        return decodedPwdToken;
-    } catch (err) {
-        console.log(err)
-        return null        
-    }
-}

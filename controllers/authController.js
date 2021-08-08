@@ -7,12 +7,11 @@ const testing = (req, res, next) => {
 
 const User = require('../models/user');
 const Token = require('../models/token');
-const {sendMail} = require('../services/sendEmail');
-const { nanoid } = require('nanoid')
+const sendMail = require('../services/sendEmail');
+const {customAlphabet}  = require('nanoid');
 const bcrypt = require('bcryptjs');
 const {createToken, decodePwdToken} = require('../jwtServices.js');
 const { JsonWebTokenError } = require('jsonwebtoken');
-const _ = require('lodash');
 const user = require('../models/user');
 const { sendSuccessResponse } = require('../middlewares/response');
 const token = require('../models/token');
@@ -87,52 +86,57 @@ exports.forgotPassword = (req, res) => {
       return res.status(400).json({err})
     }
     if (!foundUser) {
-      return res.status(401).json({message: "User with this email does not exist"})
+      return res.status(404).json({message: "User with this email does not exist"})
     }
-    let token = await Token.findOne({ userId: user._id});
-    if (!token) {return res.status(400).send("Invalid user");}
-    token = await new Token({
+   
+    //Creates an OTP and sends to the user's Email
+    Token.create({
       userId: user._id,
       email: req.body.email,
-      token: bcrypt.randomBytes(32).toString("hex"),
+      token: customAlphabet('1234567890', 6)(),
       createdAt: Date.now(),
-    }).save();
-
-    const link = `${process.env.BASE_URL}/forgotPassword/${user._id}/${token.token}`;
-    User.link = link;
-    User.save();
-    await sendEmail(user.email, "Password reset",link);
+    }, (err, token) => {
+      if (err) {
+        return res.status(500).json({err})
+      }
+    
+    let text = "Kindly enter the numbers to reset your password " +  token.token;
+    sendMail(user.email, "Password reset", text, (err) => {
+      if (err) {
+        return res.status(500).json({err})
+      }
+      else return res.status(200).json({message: "Email successfully sent"})
+    });
+    });
   })
 }
 
-//
+//User puts in sent OTP, token validation and password gets updated
 exports.resetPassword = (req, res) => {
-  const {link, newPass} = req.body;
-  if (decodePwdToken(token)) {
-    if(link) {
-      
-   User.findOne({link}, (err, foundUser) => {
+  const {token, newPass} = req.body;
+  
+  //Checks token if valid with user
+   Token.findOne({token}).populate("userId").exec((err, foundToken) => {
        if (err)  {
          return res.status(400).json({err});
        }
-       if (!foundUser) {
+       if (!foundToken) {
            return res.status(400).json({message: "User with this token does not exist."});
        }
-       const obj ={
-         password: newPass,
-         link: ''
-       }
+       const user = foundToken.userId;
+
+      //It's a good practise to also hash and salt updated password for security purposes       
        bcrypt.genSalt(10, (err,salt) => {
           if (err) {
               return res.status(500).json({err})
           }
-          bcrypt.hash(req.body.password, salt, (err, hashedPassword) => {
+          bcrypt.hash(newPass, salt, (err, hashedPassword) => {
             if (err) {
                 return res.status(500).json({err})  
             }
-            User.password = hashedPassword;
-            User = _.extend(User, obj);           
-            User.save((err, result) => { 
+            //Updates password and gets saved in the database
+            user.password = hashedPassword;                      
+            user.save((err, result) => { 
                 if (err) {
                     return res.status(400).json({err: "Reset password error"});
                 }else {
@@ -142,10 +146,4 @@ exports.resetPassword = (req, res) => {
           })
         })
     })
-    }else {
-      return res.status(400).json({message: "Link not found"});
-    }
-  }else {
-    return res.status(500).json({message: "Token Expired"});
   }
-} 
