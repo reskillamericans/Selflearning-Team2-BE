@@ -1,4 +1,6 @@
 const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
@@ -57,6 +59,7 @@ app.use('/api/v1/courses', require('./routes/courseRoute'));
 // Step Route
 app.use('/api/v1/steps', require('./routes/stepRoute'));
 
+
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
   res.status(404).json({
@@ -64,5 +67,6 @@ app.all('*', (req, res, next) => {
     errorMessage: `Can't find ${req.originalUrl} on this server`
   });
 });
+
 
 module.exports = app;

@@ -14,7 +14,7 @@ const userSchema = new Schema({
   courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   steps: [{ type: Schema.Types.ObjectId, ref: 'Step' }],
   availability: [Date],
-  channels: [{platform: String, address: String}]
+  channels: [{platform: String, address: String}]     
 })
 
 module.exports = mongoose.model('User', userSchema)
