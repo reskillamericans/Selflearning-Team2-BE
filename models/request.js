@@ -10,4 +10,4 @@ const requestSchema = new Schema(
   },
   { timestamps: true }
 )
-module.exports = mongoose.model('Request', requestSchema)
+module.exports = mongoose.model('Request', requestSchema);
