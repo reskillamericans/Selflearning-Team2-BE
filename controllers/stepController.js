@@ -109,7 +109,8 @@ exports.destroy = async (req, res) => {
 exports.index = async (req, res) => {
   try {
     const id = req.params.id
-    const data = await Step.find(id) // Request vs Step???
+    await Request.findById({step: id})
+    const data = await Step.find(id) 
     res.status(200).json({ step: data })
   } catch (err) {
     if (err) {
@@ -117,6 +118,7 @@ exports.index = async (req, res) => {
     }
   }
 }
+
 //Update / Accept requests (mentor)
 exports.update = async (req, res) => {
   try {
@@ -135,8 +137,7 @@ exports.update = async (req, res) => {
 //Show requests for assistance (student)
 exports.index = async (req, res) => {
   try {
-    const id = req.user.student
-    const data = await Request.find(id) // id matches id of logged in user. 
+    const data = await Request.find({student: req.user.id}) // id matches id of logged in user. 
     res.status(200).json({ request: data })
   } catch (err) {
     if (err) {
