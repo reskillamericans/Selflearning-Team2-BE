@@ -93,7 +93,7 @@ exports.forgotPassword = (req, res) => {
     Token.create({
       userId: user._id,
       email: req.body.email,
-      token: customAlphabet('1234567890', 6)(),
+      token: customAlphabet('123456789', 6)(),
       createdAt: Date.now(),
     }, (err, token) => {
       if (err) {
@@ -114,7 +114,21 @@ exports.forgotPassword = (req, res) => {
 //User puts in sent OTP, token validation and password gets updated
 exports.resetPassword = (req, res) => {
   const {token, newPass} = req.body;
-  
+  let date1 = Token.createdAt;
+  let date2 = Date.now();
+  let date3 = `${Math.floor((date2-date1)/1000)}`;
+
+  if (date3 > 600) {
+    return res.status(400).json({message: "Token expired. Please attempt reset again"});
+  }
+  //This is checking if token is not a number and if the length is not up to 6
+  if (!token) {
+    return res.status(400).json({message: "Token is invalid. Please request another token."});
+  }
+  //If newPass has a value of Undefined or it is Empty
+  if ((!newPass) || (newPass == '')) {
+    return res.status(400).json({message: "Password is required. Please enter a valid password."});
+  }
   //Checks token if valid with user
    Token.findOne({token}).populate("userId").exec((err, foundToken) => {
        if (err)  {
@@ -146,4 +160,4 @@ exports.resetPassword = (req, res) => {
           })
         })
     })
-  }
+  } 
