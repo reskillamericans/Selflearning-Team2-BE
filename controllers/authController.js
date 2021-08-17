@@ -116,7 +116,7 @@ exports.resetPassword = (req, res) => {
   const {token, newPass} = req.body;
   let date1 = Token.createdAt;
   let date2 = Date.now();
-  let date3 = `${Math.floor((date2-date1)/1000)}`;
+  let date3 = Math.floor((date2-date1)/1000);
 
   if (date3 > 600) {
     return res.status(400).json({message: "Token expired. Please attempt reset again"});
